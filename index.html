@@ -403,45 +403,60 @@
         </div>
       </div>
 
-      <div id="contact" style="margin-top:46px; padding-top:18px; border-top:1px solid var(--line);">
-        <div class="section-kicker">CONTACT</div>
-        <h2>連絡先 / Contact</h2>
-        <p class="p">
-          取引・提携・事業連携に関するお問い合わせは、下記よりご連絡ください。<br/>
-          <span style="color:var(--subtle); font-size:14px;">
-            For partnership and business inquiries, please contact us using the information below.
-          </span>
-        </p>
+      <div id="contact" style="margin-top:60px; padding-top:40px; border-top:1px solid rgba(231,234,240,.12);">
 
-        <div class="contact-box">
-          <div class="contact-card">
-            <div class="label">E-mail</div>
-            <div class="value">info@yourdomain.com（←ここを変更）</div>
+  <div class="section-kicker">CONTACT</div>
+  <h2 style="margin:14px 0 18px;">お問い合わせ</h2>
 
-            <div class="label" style="margin-top:14px;">Phone</div>
-            <div class="value">+81-XX-XXXX-XXXX（←ここを変更）</div>
+  <p class="p" style="margin-bottom:24px;">
+    事業提携・取引・投資に関するお問い合わせは、以下フォームよりご連絡ください。
+  </p>
 
-            <div class="label" style="margin-top:14px;">Location</div>
-            <div class="value">Tokyo, Japan（必要なら住所は別ページに）</div>
+  <div class="contact-card" style="max-width:720px;">
+    
+    <form onsubmit="return sendMail(event)" style="display:grid; gap:14px;">
+      
+      <input id="nm" type="text" placeholder="お名前 / Name" required
+        style="width:100%; padding:14px 16px; border-radius:14px; border:1px solid rgba(231,234,240,.18); background:rgba(255,255,255,.04); color:rgba(231,234,240,.9); outline:none; font-size:14px;" />
 
-            <div class="contact-actions">
-              <a class="btn" href="mailto:info@yourdomain.com">メールを送る</a>
-              <a class="btn" href="#structure">構造へ</a>
-              <a class="btn" href="#portfolio">領域へ</a>
-            </div>
-          </div>
+      <input id="ct" type="text" placeholder="連絡先（Email / Phone / WeChat 等）" required
+        style="width:100%; padding:14px 16px; border-radius:14px; border:1px solid rgba(231,234,240,.18); background:rgba(255,255,255,.04); color:rgba(231,234,240,.9); outline:none; font-size:14px;" />
 
-          <div class="contact-card">
-            <div class="label">Inquiry Form（任意）</div>
-            <div class="value">
-              フォームを使う場合は、無料のフォームサービスを推奨します。<br/>
-              例：Googleフォーム / Tally / Formspree など。<br/>
-              （必要なら、あなたの希望に合わせて埋め込みコードをこちらに設置します）
-            </div>
-            <div class="contact-actions">
-              <a class="btn" href="#" onclick="return false;">フォームURLを入れる</a>
-            </div>
-          </div>
+      <textarea id="msg" placeholder="お問い合わせ内容 / Message" required rows="6"
+        style="width:100%; padding:14px 16px; border-radius:14px; border:1px solid rgba(231,234,240,.18); background:rgba(255,255,255,.04); color:rgba(231,234,240,.9); outline:none; resize:vertical; font-size:14px;"></textarea>
+
+      <button type="submit" class="btn" style="width:160px; cursor:pointer;">
+        送信 / Submit
+      </button>
+
+      <div style="font-size:12px; color:rgba(231,234,240,.55);">
+        ※ 送信ボタンを押すとメール作成画面が開きます。
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<script>
+function sendMail(e){
+  e.preventDefault();
+
+  const name = document.getElementById('nm').value.trim();
+  const contact = document.getElementById('ct').value.trim();
+  const message = document.getElementById('msg').value.trim();
+
+  const to = "info@toki-holdings.jp";  
+  const subject = encodeURIComponent("【Website Inquiry】Toki Holdings / " + name);
+  const body = encodeURIComponent(
+    "Name: " + name + "\n" +
+    "Contact: " + contact + "\n\n" +
+    "Message:\n" + message
+  );
+
+  window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
+  return false;
+}
+</script>
         </div>
 
       </div>
@@ -452,7 +467,7 @@
   <footer>
     <div class="wrap footer-row">
       <div>Toki Holdings &nbsp;|&nbsp; Tokyo, Japan</div>
-      <div>© 2026 Toki Holdings</div>
+      <div>© 2015 Toki Holdings</div>
     </div>
   </footer>
 
