@@ -8,7 +8,8 @@ const ALLOWED_ORIGINS = new Set([
 ]);
 
 function corsHeaders(origin) {
-  const allowedOrigin = ALLOWED_ORIGINS.has(origin) ? origin : "https://toki-holdings.jp";
+  const isLocalApp = /^http:\/\/(127\.0\.0\.1|localhost):\d+$/.test(origin);
+  const allowedOrigin = ALLOWED_ORIGINS.has(origin) || isLocalApp ? origin : "https://toki-holdings.jp";
   return {
     "Access-Control-Allow-Origin": allowedOrigin,
     "Access-Control-Allow-Methods": "GET, POST, PATCH, DELETE, OPTIONS",

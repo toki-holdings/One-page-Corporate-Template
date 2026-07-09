@@ -9,13 +9,9 @@
     return Boolean((publicApiBase || supabaseBase) && anonKey && window.fetch);
   }
 
-  function shouldUseLocalProxy() {
-    return location.protocol === "http:" && ["127.0.0.1", "localhost"].includes(location.hostname);
-  }
-
   function endpoint(path) {
     const base = publicApiBase || supabaseBase;
-    return shouldUseLocalProxy() ? `/__supabase${path}` : `${base}${path}`;
+    return `${base}${path}`;
   }
 
   function headers(accessToken = "") {
