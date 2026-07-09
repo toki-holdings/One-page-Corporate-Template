@@ -1,4 +1,4 @@
-const DEFAULT_SUPABASE_URL = "https://ptaouofqawjezqlxvjk.supabase.co";
+const DEFAULT_SUPABASE_URL = "https://ptaouofqawvjezqlxvjk.supabase.co";
 const DEFAULT_SUPABASE_ANON_KEY = "sb_publishable_Q8VjIlX6EcS8_GEZ9ZripQ_3O22sobX";
 
 const ALLOWED_ORIGINS = new Set([
