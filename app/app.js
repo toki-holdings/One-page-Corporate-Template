@@ -1830,7 +1830,7 @@ function renderLogin(message = "") {
     <section class="login-panel">
       <div class="form-title">
         <h3>会社ラク経営 ログイン</h3>
-        <span>${window.KaishaRakuCloud?.enabled() ? "メールに届く認証コードでログインします。" : "メール認証コードでログインします。開発版では送信後にコードを画面表示します。"}</span>
+        <span>${window.KaishaRakuCloud?.enabled() ? "メールに記載された認証コードでログインします。" : "メール認証コードでログインします。開発版では送信後にコードを画面表示します。"}</span>
       </div>
       ${field("语言", `<select id="login-language-select">
         <option value="zh" ${currentLanguage === "zh" ? "selected" : ""}>中文</option>
@@ -5731,6 +5731,10 @@ if ("serviceWorker" in navigator && location.protocol !== "file:") {
   });
 }
 
-saveState();
-render();
-updateInstallButton();
+function bootApp() {
+  saveState();
+  render();
+  updateInstallButton();
+}
+
+bootApp();

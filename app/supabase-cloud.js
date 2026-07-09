@@ -79,7 +79,7 @@
         data: {},
       }),
     });
-    return { ok: true, message: "認証コードをメールに送信しました。メールを確認してください。" };
+    return { ok: true, message: "認証コードをメールに送信しました。メールに記載されたコードを入力してください。" };
   }
 
   async function verifyOtp(email, token) {
