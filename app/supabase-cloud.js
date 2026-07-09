@@ -10,7 +10,8 @@
   }
 
   function endpoint(path) {
-    const base = publicApiBase || supabaseBase;
+    const isLocalDesktop = window.location.protocol === "http:" && /^(127\.0\.0\.1|localhost)$/.test(window.location.hostname);
+    const base = isLocalDesktop ? "/__supabase" : (publicApiBase || supabaseBase);
     return `${base}${path}`;
   }
 
