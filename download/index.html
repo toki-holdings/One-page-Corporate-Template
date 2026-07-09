@@ -37,18 +37,11 @@
       .mark {
         width: 92px;
         height: 92px;
-        display: grid;
-        place-items: center;
+        display: block;
         border-radius: 22px;
         background: #ffffff;
-        color: var(--brand);
         box-shadow: 0 18px 42px rgba(20, 30, 45, 0.12);
-        font-weight: 800;
-        line-height: 1.05;
-        text-align: center;
       }
-      .mark small { display: block; font-size: 15px; }
-      .mark strong { display: block; font-size: 34px; }
       h1 {
         margin: 0 0 10px;
         font-size: clamp(30px, 5vw, 54px);
@@ -110,7 +103,7 @@
   <body>
     <main>
       <section class="hero">
-        <div class="mark"><small>会社</small><strong>ラク</strong><small>経営</small></div>
+        <img class="mark" src="../app/assets/app-icon.svg" alt="会社ラク経営" />
         <div>
           <h1>会社ラク経営</h1>
           <p>在庫、販売、費用、給与、社員情報をひとつにまとめる小規模事業者向け業務管理アプリです。</p>
@@ -124,7 +117,7 @@
       <section class="grid">
         <div class="panel">
           <h2>デスクトップ版</h2>
-          <p>Mac はアプリを開くだけで利用できます。Windows は同梱の起動ファイルから利用できます。</p>
+          <p>Mac は初回のみ右クリックして「開く」を選択してください。Windows は同梱の起動ファイルから利用できます。</p>
         </div>
         <div class="panel">
           <h2>スマホ版</h2>
