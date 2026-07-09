@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="会社ラク経営" />
+    <meta name="theme-color" content="#111827" />
+    <title>会社ラク経営</title>
+    <link rel="manifest" href="./manifest.webmanifest?v=20260709-cloud4" />
+    <link rel="icon" href="./assets/app-icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="./assets/app-icon.svg" />
+    <link rel="stylesheet" href="./styles.css?v=20260709-cloud4" />
+  </head>
+  <body>
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="mark" aria-label="会社ラク経営">
+          <span>会社</span>
+          <strong>ラク</strong>
+          <span>経営</span>
+        </div>
+        <div>
+          <h1>会社ラク経営</h1>
+          <p>業務・在庫・経営管理</p>
+        </div>
+      </div>
+      <nav>
+        <button class="active" data-view="dashboard">ダッシュボード</button>
+        <button data-view="products">商品</button>
+        <button data-view="inventory">在庫</button>
+        <button data-view="sales">販売</button>
+        <button data-view="marketplace">会社ラク市場</button>
+        <button data-view="expenses">費用・コスト</button>
+        <button data-view="employees">社員</button>
+        <button data-view="wages">給与</button>
+        <button data-view="transactions">履歴</button>
+        <button data-view="users">権限</button>
+      </nav>
+      <label class="language-switch">
+        <span>言語</span>
+        <select id="language-select">
+          <option value="ja">日本語</option>
+          <option value="zh">中文</option>
+          <option value="en">English</option>
+          <option value="ko">한국어</option>
+          <option value="es">Español</option>
+          <option value="fr">Français</option>
+          <option value="de">Deutsch</option>
+          <option value="pt">Português</option>
+          <option value="it">Italiano</option>
+          <option value="id">Bahasa Indonesia</option>
+          <option value="th">ไทย</option>
+          <option value="vi">Tiếng Việt</option>
+          <option value="ar">العربية</option>
+          <option value="hi">हिन्दी</option>
+          <option value="ru">Русский</option>
+        </select>
+      </label>
+    </aside>
+
+    <main>
+      <header>
+        <div>
+          <p class="eyebrow">業務管理システム</p>
+          <h2 id="page-title">ダッシュボード</h2>
+        </div>
+        <div class="actions">
+          <button id="install-pwa-btn" hidden>インストール</button>
+          <button id="seed-btn">サンプル初期化</button>
+          <button id="export-btn">JSON出力</button>
+        </div>
+      </header>
+
+      <section id="app"></section>
+    </main>
+
+    <script src="./supabase-config.js?v=20260709-cloud4"></script>
+    <script src="./supabase-cloud.js?v=20260709-cloud4"></script>
+    <script src="./app.js?v=20260709-cloud4"></script>
+  </body>
+</html>

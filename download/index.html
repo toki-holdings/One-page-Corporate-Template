@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>会社ラク経営 ダウンロード</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #17202a;
+        --muted: #667085;
+        --line: #d8dee8;
+        --brand: #c62828;
+        --accent: #176b5b;
+        --paper: #f7f8fa;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+        color: var(--ink);
+        background: var(--paper);
+      }
+      main {
+        width: min(1040px, calc(100% - 40px));
+        margin: 0 auto;
+        padding: 56px 0;
+      }
+      .hero {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 24px;
+        align-items: center;
+        padding-bottom: 34px;
+        border-bottom: 1px solid var(--line);
+      }
+      .mark {
+        width: 92px;
+        height: 92px;
+        display: grid;
+        place-items: center;
+        border-radius: 22px;
+        background: #ffffff;
+        color: var(--brand);
+        box-shadow: 0 18px 42px rgba(20, 30, 45, 0.12);
+        font-weight: 800;
+        line-height: 1.05;
+        text-align: center;
+      }
+      .mark small { display: block; font-size: 15px; }
+      .mark strong { display: block; font-size: 34px; }
+      h1 {
+        margin: 0 0 10px;
+        font-size: clamp(30px, 5vw, 54px);
+        letter-spacing: 0;
+      }
+      p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.8;
+      }
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin: 30px 0 0;
+      }
+      a.button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 46px;
+        padding: 0 18px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 700;
+      }
+      .primary { background: var(--ink); color: #fff; }
+      .secondary { background: #fff; color: var(--ink); border: 1px solid var(--line); }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+        margin-top: 30px;
+      }
+      .panel {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 18px;
+      }
+      h2 {
+        margin: 0 0 10px;
+        font-size: 18px;
+        letter-spacing: 0;
+      }
+      .note {
+        margin-top: 28px;
+        padding: 16px 18px;
+        border-left: 4px solid var(--accent);
+        background: #fff;
+      }
+      @media (max-width: 760px) {
+        main { width: min(100% - 28px, 1040px); padding: 34px 0; }
+        .hero { grid-template-columns: 1fr; }
+        .grid { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="hero">
+        <div class="mark"><small>会社</small><strong>ラク</strong><small>経営</small></div>
+        <div>
+          <h1>会社ラク経営</h1>
+          <p>在庫、販売、費用、給与、社員情報をひとつにまとめる小規模事業者向け業務管理アプリです。</p>
+          <div class="actions">
+            <a class="button primary" href="../downloads/kaisha-raku-client-latest.zip">Mac / Windows 版をダウンロード</a>
+            <a class="button secondary" href="../app/">スマホ版を開く</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="grid">
+        <div class="panel">
+          <h2>デスクトップ版</h2>
+          <p>Mac はアプリを開くだけで利用できます。Windows は同梱の起動ファイルから利用できます。</p>
+        </div>
+        <div class="panel">
+          <h2>スマホ版</h2>
+          <p>Safari や Chrome から開き、ホーム画面に追加して利用できます。</p>
+        </div>
+        <div class="panel">
+          <h2>クラウド同期</h2>
+          <p>ログインと同期は api.toki-holdings.jp 経由で行い、ユーザー端末から Supabase へ直接接続しません。</p>
+        </div>
+      </section>
+
+      <div class="note">
+        <p>初回リリース前に、メールログインとデータ同期が本番ドメインで動作することを確認してください。</p>
+      </div>
+    </main>
+  </body>
+</html>
