@@ -93,6 +93,16 @@
         border-left: 4px solid var(--accent);
         background: #fff;
       }
+      .top-link {
+        display: inline-flex;
+        align-items: center;
+        margin-bottom: 24px;
+        color: var(--muted);
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 700;
+      }
+      .top-link:hover { color: var(--ink); }
       @media (max-width: 760px) {
         main { width: min(100% - 28px, 1040px); padding: 34px 0; }
         .hero { grid-template-columns: 1fr; }
@@ -102,6 +112,7 @@
   </head>
   <body>
     <main>
+      <a class="top-link" href="../">← 公式サイトへ戻る</a>
       <section class="hero">
         <img class="mark" src="../app/assets/app-icon.svg" alt="会社ラク経営" />
         <div>
