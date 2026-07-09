@@ -6,33 +6,78 @@
     <title>会社ラク経営 ダウンロード</title>
     <style>
       :root {
-        color-scheme: light;
-        --ink: #17202a;
-        --muted: #667085;
-        --line: #d8dee8;
-        --brand: #c62828;
-        --accent: #176b5b;
-        --paper: #f7f8fa;
+        color-scheme: dark;
+        --bg0: #070a10;
+        --bg1: #0b1220;
+        --text: #e7eaf0;
+        --muted: rgba(231, 234, 240, 0.78);
+        --subtle: rgba(231, 234, 240, 0.6);
+        --line: rgba(231, 234, 240, 0.12);
+        --accent: #c8b27a;
+        --accent2: #8f7e4c;
+        --card: rgba(255, 255, 255, 0.06);
+        --card2: rgba(255, 255, 255, 0.04);
+        --shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+        --radius: 18px;
       }
       * { box-sizing: border-box; }
+      html, body { min-height: 100%; }
       body {
         margin: 0;
         font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
-        color: var(--ink);
-        background: var(--paper);
+        color: var(--text);
+        background:
+          radial-gradient(900px 600px at 18% 12%, rgba(200, 178, 122, 0.16), transparent 60%),
+          radial-gradient(900px 600px at 82% 18%, rgba(120, 160, 255, 0.12), transparent 62%),
+          linear-gradient(180deg, var(--bg0), var(--bg1) 55%, #070a10);
+        line-height: 1.75;
+        letter-spacing: 0.02em;
+        -webkit-font-smoothing: antialiased;
+      }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background:
+          radial-gradient(1px 1px at 10% 20%, rgba(255, 255, 255, 0.25), transparent 60%),
+          radial-gradient(1px 1px at 20% 70%, rgba(255, 255, 255, 0.18), transparent 60%),
+          radial-gradient(1px 1px at 55% 35%, rgba(255, 255, 255, 0.14), transparent 60%),
+          radial-gradient(1px 1px at 80% 60%, rgba(255, 255, 255, 0.16), transparent 60%);
+        opacity: 0.55;
+        mix-blend-mode: screen;
       }
       main {
         width: min(1040px, calc(100% - 40px));
         margin: 0 auto;
         padding: 56px 0;
+        position: relative;
+        z-index: 1;
       }
       .hero {
         display: grid;
         grid-template-columns: auto 1fr;
         gap: 24px;
         align-items: center;
-        padding-bottom: 34px;
+        padding: 34px;
         border-bottom: 1px solid var(--line);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.04));
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(10px);
+        position: relative;
+        overflow: hidden;
+      }
+      .hero::after {
+        content: "";
+        position: absolute;
+        left: 34px;
+        right: 34px;
+        bottom: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(200, 178, 122, 0.55), transparent);
+        opacity: 0.7;
       }
       .mark {
         width: 92px;
@@ -46,6 +91,7 @@
         margin: 0 0 10px;
         font-size: clamp(30px, 5vw, 54px);
         letter-spacing: 0;
+        font-weight: 600;
       }
       p {
         margin: 0;
@@ -68,8 +114,17 @@
         text-decoration: none;
         font-weight: 700;
       }
-      .primary { background: var(--ink); color: #fff; }
-      .secondary { background: #fff; color: var(--ink); border: 1px solid var(--line); }
+      .primary {
+        background: rgba(200, 178, 122, 0.16);
+        color: rgba(231, 234, 240, 0.92);
+        border: 1px solid rgba(200, 178, 122, 0.35);
+      }
+      .secondary {
+        background: rgba(255, 255, 255, 0.04);
+        color: rgba(231, 234, 240, 0.86);
+        border: 1px solid rgba(231, 234, 240, 0.14);
+      }
+      .button:hover { background: rgba(200, 178, 122, 0.2); }
       .grid {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -77,21 +132,28 @@
         margin-top: 30px;
       }
       .panel {
-        background: #fff;
-        border: 1px solid var(--line);
-        border-radius: 8px;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.035));
+        border: 1px solid rgba(231, 234, 240, 0.12);
+        border-radius: var(--radius);
         padding: 18px;
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(10px);
       }
       h2 {
         margin: 0 0 10px;
         font-size: 18px;
         letter-spacing: 0;
+        color: rgba(231, 234, 240, 0.94);
       }
       .note {
         margin-top: 28px;
         padding: 16px 18px;
         border-left: 4px solid var(--accent);
-        background: #fff;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 0 var(--radius) var(--radius) 0;
+        border-top: 1px solid rgba(231, 234, 240, 0.1);
+        border-right: 1px solid rgba(231, 234, 240, 0.1);
+        border-bottom: 1px solid rgba(231, 234, 240, 0.1);
       }
       .top-link {
         display: inline-flex;
@@ -101,8 +163,15 @@
         text-decoration: none;
         font-size: 14px;
         font-weight: 700;
+        border: 1px solid rgba(231, 234, 240, 0.12);
+        border-radius: 999px;
+        padding: 7px 12px;
+        background: rgba(255, 255, 255, 0.04);
       }
-      .top-link:hover { color: var(--ink); }
+      .top-link:hover {
+        color: var(--text);
+        border-color: rgba(200, 178, 122, 0.28);
+      }
       @media (max-width: 760px) {
         main { width: min(100% - 28px, 1040px); padding: 34px 0; }
         .hero { grid-template-columns: 1fr; }
@@ -136,7 +205,7 @@
         </div>
         <div class="panel">
           <h2>クラウド同期</h2>
-          <p>ログインと同期は api.toki-holdings.jp 経由で行い、ユーザー端末から Supabase へ直接接続しません。</p>
+          <p>メールログインと同期は Cloudflare 経由で処理し、端末から直接データベースへ接続しません。</p>
         </div>
       </section>
 
