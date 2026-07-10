@@ -63,7 +63,7 @@
     if (!response.ok) {
       const rawMessage = body?.msg || body?.message || body?.error_description || body?.error || "";
       let message = rawMessage || `HTTP ${response.status}`;
-      if (/Error sending confirmation email/i.test(rawMessage)) {
+      if (/Error sending (confirmation|magic link) email/i.test(rawMessage)) {
         message = "認証メールを送信できません。Supabase の SMTP 設定、送信元メール、SMTP パスワードを確認してください。";
       } else if (!rawMessage && response.status === 403) {
         message = "HTTP 403: 認証またはアクセス権限で拒否されました。Supabase の API キー、メール認証設定、SMTP 設定を確認してください。";

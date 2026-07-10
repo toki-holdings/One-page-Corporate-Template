@@ -1,4 +1,4 @@
-const CACHE_NAME = "kaisha-raku-keiei-v20260710-cloud10";
+const CACHE_NAME = "kaisha-raku-keiei-v20260710-cloud12";
 const APP_SHELL = [
   "./",
   "./index.html",
