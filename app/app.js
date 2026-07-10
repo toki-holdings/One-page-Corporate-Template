@@ -26,12 +26,6 @@ const permissionActions = [
   ["delete", "删除"],
   ["export", "导出/PDF"],
 ];
-const defaultLogins = {
-  u1: { loginId: "boss", password: "123456" },
-  u2: { loginId: "warehouse", password: "123456" },
-  u3: { loginId: "store", password: "123456" },
-  u4: { loginId: "finance", password: "123456" },
-};
 const scopedCompanyKeys = [
   "users", "locations", "products", "batches", "transactions", "customers", "sales", "expenses", "wages",
   "marketplaceListings", "marketplaceInquiries", "marketplaceVerifications", "marketplaceReports",
@@ -56,7 +50,7 @@ const uiTranslations = {
     "退出": "ログアウト",
     "登录": "ログイン",
     "唯一账本登录": "会社ラク経営 ログイン",
-    "开发版默认社長ID：boss / 123456": "開発用社長ID：boss / 123456",
+    "请使用邮箱验证码登录": "メール認証でログインしてください",
     "登录ID": "ログインID",
     "密码": "パスワード",
     "ID 或密码不正确。": "IDまたはパスワードが正しくありません。",
@@ -200,7 +194,7 @@ const uiTranslations = {
     "公司总支出": "会社総支出",
     "个人负担": "本人負担",
     "新增账号": "アカウント追加",
-    "创建后可设置登录ID、密码和权限": "作成後にログインID・パスワード・権限を設定できます",
+    "创建后可设置登录ID、密码和权限": "作成後に権限を設定できます",
     "姓名 / ID 名称": "氏名 / アカウント名",
     "角色": "役割",
     "老板": "社長",
@@ -215,7 +209,7 @@ const uiTranslations = {
     "位置名称": "拠点名",
     "保存位置": "拠点を保存",
     "账号权限管理": "アカウント権限管理",
-    "开发版密码保存在本机浏览器数据里": "開発版ではパスワードはこのブラウザ内に保存されます",
+    "开发版密码保存在本机浏览器数据里": "ログインはメール認証で行います",
     "状态": "状態",
     "启用": "有効",
     "停用": "無効",
@@ -336,7 +330,7 @@ const uiTranslations = {
     "退出": "Log out",
     "登录": "Login",
     "唯一账本登录": "Unique Ledger Login",
-    "开发版默认社長ID：boss / 123456": "Dev president ID: boss / 123456",
+    "请使用邮箱验证码登录": "Sign in with email verification",
     "登录ID": "Login ID",
     "密码": "Password",
     "ID 或密码不正确。": "Incorrect ID or password.",
@@ -439,7 +433,7 @@ const seedState = {
       id: "au1",
       phoneNumber: "",
       displayName: "社長ID",
-      email: "boss@example.co.jp",
+      email: "",
       avatarUrl: "",
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -885,8 +879,8 @@ function normalizeState(value) {
       companyId: item.companyId || item.company_id || defaultCompanyId,
       ...seedUser,
       ...item,
-      loginId: item.loginId || defaultLogins[item.id]?.loginId || "",
-      password: item.password || defaultLogins[item.id]?.password || "123456",
+      loginId: "",
+      password: "",
       permissions: basePermissions,
       baseSalary: Number(item.baseSalary ?? seedUser.baseSalary ?? 0),
       standardSalary: Number(item.standardSalary ?? item.baseSalary ?? seedUser.standardSalary ?? seedUser.baseSalary ?? 0),
@@ -1173,11 +1167,41 @@ function normalizeState(value) {
 
 let cloudSaveTimer = null;
 
+function sanitizeDocumentMetadata(items = []) {
+  return (Array.isArray(items) ? items : []).map((item) => ({
+    id: item.id || "",
+    size: Number(item.size || 0),
+    type: item.type || "",
+    uploadedAt: item.uploadedAt || item.preparedAt || "",
+    preparedAt: item.preparedAt || item.uploadedAt || "",
+  }));
+}
+
+function sanitizeCloudState(value) {
+  const sanitized = structuredClone(value || {});
+  sanitized.emailVerificationCodes = [];
+  sanitized.emailChangeLogs = [];
+  sanitized.users = (sanitized.users || []).map((user) => {
+    const cleanUser = { ...user, loginId: "", password: "" };
+    cleanUser.documents = sanitizeDocumentMetadata(user.documents);
+    return cleanUser;
+  });
+  sanitized.marketplaceVerifications = (sanitized.marketplaceVerifications || []).map((verification) => ({
+    ...verification,
+    ownerDocuments: sanitizeDocumentMetadata(verification.ownerDocuments),
+    companyDocuments: sanitizeDocumentMetadata(verification.companyDocuments),
+    identityDocumentUrl: "",
+    licenseDocumentUrl: "",
+    documentStoragePolicy: "metadata_only_local",
+  }));
+  return sanitized;
+}
+
 function queueCloudSave() {
   if (!window.KaishaRakuCloud?.readSession?.()) return;
   clearTimeout(cloudSaveTimer);
   cloudSaveTimer = setTimeout(() => {
-    window.KaishaRakuCloud.pushState(rawState).catch((error) => {
+    window.KaishaRakuCloud.pushState(sanitizeCloudState(rawState)).catch((error) => {
       console.warn("Cloud sync failed", error);
     });
   }, 800);
@@ -1830,7 +1854,7 @@ function renderLogin(message = "") {
     <section class="login-panel">
       <div class="form-title">
         <h3>会社ラク経営 ログイン</h3>
-        <span>${window.KaishaRakuCloud?.enabled() ? "メールに記載された認証コードでログインします。" : "メール認証コードでログインします。開発版では送信後にコードを画面表示します。"}</span>
+        <span>${window.KaishaRakuCloud?.enabled() ? "メールに記載された認証コードでログインします。" : "クラウドメール認証の設定を確認してください。"}</span>
       </div>
       ${field("语言", `<select id="login-language-select">
         <option value="zh" ${currentLanguage === "zh" ? "selected" : ""}>中文</option>
@@ -2091,30 +2115,8 @@ function updateAccountProfile(data) {
   const newEmail = normalizeEmail(data.get("newEmail"));
   const code = String(data.get("code") || "").trim();
   if (newEmail) {
-    if (rawState.accountUsers.some((item) => item.id !== user.id && normalizeEmail(item.email) === newEmail)) {
-      alert("このメールアドレスは既に使用されています。管理者へ申請してください。");
-      return;
-    }
-    const result = verifyEmailCode(newEmail, code, "email_change");
-    if (!result.ok) {
-      alert(result.message);
-      return;
-    }
-    const oldEmail = user.email;
-    user.email = newEmail;
-    user.updatedAt = new Date().toISOString();
-    rawState.companyMembers.forEach((member) => {
-      if (member.userId === user.id) member.phoneNumber = newEmail;
-    });
-    rawState.emailChangeLogs.unshift({
-      id: uid("ecl"),
-      userId: user.id,
-      oldPhoneNumber: oldEmail,
-      newPhoneNumber: newEmail,
-      changedAt: new Date().toISOString(),
-      ipAddress: "local-dev",
-      deviceInfo: navigator.userAgent || "",
-    });
+    alert("メールアドレス変更は安全確認のため現在停止中です。管理者へ申請してください。");
+    return;
     logActivity("email_change", "user", user.id, `${oldEmail} -> ${newEmail}`);
   } else {
     user.updatedAt = new Date().toISOString();
@@ -2166,7 +2168,7 @@ function bindLoginForm() {
         result = { ok: false, message: `メール送信に失敗しました: ${error.message}` };
       }
     } else {
-      result = sendEmailVerificationCode(email, "login");
+      result = { ok: false, message: "クラウド認証が利用できません。ネットワークまたは設定を確認してください。" };
     }
     renderLogin(result.message);
     const emailInput = document.querySelector('#login-form [name="email"]');
@@ -2188,12 +2190,8 @@ function bindLoginForm() {
         return;
       }
     } else {
-      const result = verifyEmailCode(email, code, "login");
-      if (!result.ok) {
-        renderLogin(result.message);
-        return;
-      }
-      user = localAccountFromEmail(email);
+      renderLogin("クラウド認証が利用できません。ネットワークまたは設定を確認してください。");
+      return;
     }
     currentUserId = user.id;
     sessionStorage.setItem(sessionKey, currentUserId);
@@ -2212,32 +2210,7 @@ function emailCodeHash(code) {
 
 function sendEmailVerificationCode(email, purpose = "login") {
   if (!email || !email.includes("@")) return { ok: false, message: "メールアドレスを入力してください。" };
-  const now = Date.now();
-  const records = rawState.emailVerificationCodes.filter((item) => item.phoneNumber === email && item.purpose === purpose);
-  const last = records.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
-  if (last && now - new Date(last.createdAt).getTime() < 60 * 1000) {
-    return { ok: false, message: "60秒以内の再送信はできません。" };
-  }
-  const hourCount = records.filter((item) => now - new Date(item.createdAt).getTime() < 60 * 60 * 1000).length;
-  if (hourCount >= 5) return { ok: false, message: "1時間の送信上限に達しました。" };
-  const dayCount = records.filter((item) => now - new Date(item.createdAt).getTime() < 24 * 60 * 60 * 1000).length;
-  if (dayCount >= 20) return { ok: false, message: "本日の送信上限に達しました。" };
-  const code = String(Math.floor(100000 + Math.random() * 900000));
-  rawState.emailVerificationCodes.push({
-    id: uid("evc"),
-    phoneNumber: email,
-    codeHash: emailCodeHash(code),
-    devCode: code,
-    purpose,
-    expiresAt: new Date(now + 5 * 60 * 1000).toISOString(),
-    verifiedAt: "",
-    attemptCount: 0,
-    ipAddress: "local-dev",
-    deviceInfo: navigator.userAgent || "",
-    createdAt: new Date().toISOString(),
-  });
-  saveState();
-  return { ok: true, message: `認証コードを送信しました。開発版コード：${code}` };
+  return { ok: false, message: "ローカル認証コードは安全のため無効です。クラウドメール認証を使用してください。" };
 }
 
 function verifyEmailCode(email, code, purpose = "login") {
@@ -5062,8 +5035,8 @@ function bindForms() {
     state.users.push({
       id: uid("u"),
       name: data.get("name"),
-      loginId: data.get("loginId"),
-      password: data.get("password") || "123456",
+      loginId: "",
+      password: "",
       role,
       permissions: rolePermissions(role),
       active: true,
@@ -5101,8 +5074,8 @@ function bindForms() {
       if (!user) return;
       const data = new FormData(form);
       user.name = data.get("name") || user.name;
-      user.loginId = data.get("loginId") || "";
-      user.password = data.get("password") || "";
+      user.loginId = "";
+      user.password = "";
       user.role = data.get("role") || "只读";
       user.active = data.get("active") === "true";
       user.permissions = blankPermissions();
