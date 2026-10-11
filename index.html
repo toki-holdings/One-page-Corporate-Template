@@ -258,30 +258,53 @@
     .contact-box{ grid-template-columns:1fr; }
     header.hero{ min-height:70vh; }
   }
+
+  /* Final brand integration: transparent asset, no separate header surface. */
+  html{scroll-behavior:smooth;}
+  .topbar{position:absolute;inset:0 0 auto;z-index:5;background:transparent;border:0;backdrop-filter:none;}
+  .topbar:before{content:"";position:absolute;inset:0 0 -60px;z-index:-1;pointer-events:none;background:linear-gradient(180deg,rgba(239,233,220,.52),rgba(226,231,234,.20) 60%,transparent);}
+  .topbar .wrap{max-width:1240px;min-height:116px;padding:28px 40px;gap:32px;}
+  .brand{display:block;flex:0 0 auto;width:330px;max-width:100%;}
+  .brand img{display:block;width:100%;height:auto;filter:drop-shadow(0 1px 1px rgba(255,255,255,.24));}
+  nav{flex-wrap:nowrap;gap:12px;color:#f4f3ef;text-shadow:0 1px 6px rgba(0,0,0,.8);}
+  nav a{white-space:nowrap;padding:8px 6px;}
+  nav a:focus-visible,.brand:focus-visible,.menu-toggle:focus-visible{outline:2px solid var(--accent);outline-offset:5px;}
+  header.hero:after{display:none;}
+  .hero-content{width:100%;}
+  .menu-toggle{display:none;}
+  @media(max-width:1100px){
+    .topbar .wrap{padding:24px;gap:20px;}
+    .brand{width:300px;}
+    nav{gap:4px;font-size:12px;}
+  }
+  @media(max-width:900px){
+    .topbar .wrap{min-height:94px;padding:22px 24px;}
+    .brand{width:300px;max-width:calc(100% - 64px);}
+    .menu-toggle{display:flex;flex:0 0 40px;width:40px;height:40px;padding:10px 8px;flex-direction:column;justify-content:space-between;border:1px solid rgba(231,234,240,.42);border-radius:6px;background:rgba(26,35,50,.35);cursor:pointer;}
+    .menu-toggle span{height:1px;width:100%;background:#f4f3ef;}
+    nav{display:none;position:absolute;top:calc(100% - 8px);left:24px;right:24px;padding:12px;background:rgba(26,35,50,.97);border:1px solid rgba(200,178,122,.25);border-radius:10px;box-shadow:0 14px 30px rgba(0,0,0,.2);font-size:14px;}
+    nav.is-open{display:flex;flex-direction:column;align-items:stretch;gap:2px;}
+    nav a{padding:10px 12px;}
+  }
+  @media(max-width:600px){
+    .topbar .wrap{min-height:86px;padding:20px;gap:14px;}
+    .brand{width:260px;max-width:calc(100% - 54px);}
+    nav{left:20px;right:20px;}
+    .hero-content{padding:150px 20px 88px!important;}
+    header.hero{min-height:90svh!important;}
+    .hero-title{display:flex;align-items:baseline;gap:8px;letter-spacing:0;}
+    .hero-title span:first-child{font-size:clamp(30px,8vw,44px)!important;letter-spacing:.12em!important;}
+    .hero-title span:last-child{font-size:clamp(14px,3.6vw,20px)!important;letter-spacing:.06em!important;margin-left:0!important;}
+    .hero-content>div:nth-last-child(2){font-size:15px!important;}
+  }
+  @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto;}}
 </style>
 </head>
 
 <body>
 
-  <!-- Top navigation -->
-  <div class="topbar">
-    <div class="wrap">
-      <div class="brand">
-        <strong>東基ホールディングス</strong>
-        <span>Toki Holdings</span>
-      </div>
-      <nav>
-        <a href="#structure">グループ構造</a>
-        <a href="#portfolio">事業領域</a>
-        <a href="#principles">事業展望</a>
-        <a href="./download/">会社ラク経営</a>
-        <a href="#contact">お問い合わせ</a>
-      </nav>
-    </div>
-  </div>
-
 <!-- Screen 1 -->
-<header class="hero" style="
+<header id="home" class="hero" style="
   position:relative;
   overflow:hidden;
   background-image:url('toki.jpg');
@@ -290,16 +313,33 @@
   min-height:90vh;
   border-bottom:none;
 ">
+  <!-- Navigation floats over the existing Hero photograph. -->
+  <div class="topbar">
+    <div class="wrap">
+      <a class="brand" href="#home" aria-label="東基ホールディングス ホーム">
+        <img src="assets/img/toki-logo-transparent.png" alt="東基ホールディングス / TOKI HOLDINGS" width="2172" height="724" fetchpriority="high" />
+      </a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation" aria-label="メニューを開く"><span></span><span></span><span></span></button>
+      <nav id="primary-navigation" aria-label="メインナビゲーション">
+        <a href="#structure">グループ構造</a>
+        <a href="#portfolio">事業領域</a>
+        <a href="#outlook">事業展望</a>
+        <a href="./download/?v=20260723-cloud46">会社ラク経営</a>
+        <a href="#contact">お問い合わせ</a>
+      </nav>
+    </div>
+  </div>
+
 
   <!-- 暗色层 -->
   <div style="
     position:absolute;
     inset:0;
-    background:linear-gradient(rgba(17,24,39,.65),rgba(17,24,39,.80));
+    background:linear-gradient(180deg,rgba(17,24,39,.20),rgba(17,24,39,.48) 35%,rgba(26,35,50,.80) 82%,#1a2332);
     z-index:1;">
   </div>
 
-  <div style="
+  <div class="hero-content" style="
     position:relative;
     z-index:2;
     max-width:1100px;
@@ -317,7 +357,7 @@
     </div>
 
     <!-- 主标题 -->
-    <h1 style="
+    <h1 class="hero-title" style="
       margin-top:28px;
       font-weight:500;
       line-height:1.2;
@@ -633,6 +673,22 @@
 </div>
 
 <script>
+const menuButton = document.querySelector('.menu-toggle');
+const primaryNavigation = document.getElementById('primary-navigation');
+function closeMenu(){
+  primaryNavigation.classList.remove('is-open');
+  menuButton.setAttribute('aria-expanded','false');
+  menuButton.setAttribute('aria-label','メニューを開く');
+}
+menuButton.addEventListener('click',()=>{
+  const isOpen = menuButton.getAttribute('aria-expanded') !== 'true';
+  primaryNavigation.classList.toggle('is-open',isOpen);
+  menuButton.setAttribute('aria-expanded',String(isOpen));
+  menuButton.setAttribute('aria-label',isOpen ? 'メニューを閉じる' : 'メニューを開く');
+});
+primaryNavigation.addEventListener('click',e=>{if(e.target.closest('a')) closeMenu();});
+document.addEventListener('keydown',e=>{if(e.key === 'Escape'){closeMenu();menuButton.focus();}});
+window.matchMedia('(min-width:901px)').addEventListener('change',closeMenu);
 function sendMail(e){
   e.preventDefault();
 
