@@ -654,8 +654,8 @@ const seedState = {
 
 let rawState = normalizeState(loadState());
 let currentView = "dashboard";
-let currentUserId = sessionStorage.getItem(sessionKey) || "";
-let currentCompanyId = sessionStorage.getItem(sessionCompanyKey) || "";
+let currentUserId = localStorage.getItem(sessionKey) || sessionStorage.getItem(sessionKey) || "";
+let currentCompanyId = localStorage.getItem(sessionCompanyKey) || sessionStorage.getItem(sessionCompanyKey) || "";
 let currentLanguage = localStorage.getItem(languageKey) || "ja";
 let marketplaceDraftProductId = "";
 let deferredInstallPrompt = null;
@@ -1805,11 +1805,12 @@ function setView(view) {
 }
 
 function render() {
-  if (!currentUser()) {
+  if (!currentUser() && !ensureLocalAccount()) {
     renderLogin();
     return;
   }
   document.body.classList.remove("is-logged-out");
+  localStorage.setItem(sessionKey, currentUserId);
   const memberships = activeMemberships();
   if (!memberships.length) {
     renderCompanyOnboarding();
@@ -1825,6 +1826,7 @@ function render() {
       return;
     }
   }
+  localStorage.setItem(sessionCompanyKey, currentCompanyId);
   ensureAllowedView();
   updateNavigationAccess();
   renderAccountBar();
@@ -1846,16 +1848,34 @@ function render() {
   applyLanguage();
 }
 
+function ensureLocalAccount() {
+  if (currentUser()) return true;
+  const accounts = rawState.accountUsers || [];
+  const cloudUser = window.KaishaRakuCloud?.readSession?.()?.user;
+  const matched = cloudUser?.id ? accounts.find(account => account.supabaseUserId === cloudUser.id || account.id === `sb-${cloudUser.id}`) : null;
+  let account = matched || (accounts.length === 1 ? accounts[0] : null);
+  if (!accounts.length) {
+    const now = new Date().toISOString();
+    account = { id: uid("local"), displayName: "本機ユーザー", email: "", phoneNumber: "", avatarUrl: "", createdAt: now, updatedAt: now, lastLoginAt: now };
+    rawState.accountUsers.push(account);
+  }
+  if (!account) return false;
+  currentUserId = account.id;
+  if (!rawState.companyMembers.some(member => member.userId === currentUserId && member.companyId === currentCompanyId && member.status === "active")) currentCompanyId = "";
+  account.lastLoginAt = new Date().toISOString();
+  localStorage.setItem(sessionKey, currentUserId);
+  sessionStorage.setItem(sessionKey, currentUserId);
+  saveState({ skipCloud: true });
+  return true;
+}
+
 function renderLogin(message = "") {
   document.body.classList.add("is-logged-out");
-  document.querySelectorAll("nav button").forEach((button) => button.hidden = true);
-  document.getElementById("page-title").textContent = t("登录");
+  document.querySelectorAll("nav button").forEach(button => button.hidden = true);
+  document.getElementById("page-title").textContent = "本機アカウントを選択";
   document.getElementById("app").innerHTML = `
     <section class="login-panel">
-      <div class="form-title">
-        <h3>会社ラク経営 ログイン</h3>
-        <span>${window.KaishaRakuCloud?.enabled() ? "メールに記載された認証コードでログインします。" : "クラウドメール認証の設定を確認してください。"}</span>
-      </div>
+      <div class="form-title"><h3>本機アカウントを選択</h3><span>この端末に保存されているアカウントで開きます。</span></div>
       ${field("语言", `<select id="login-language-select">
         <option value="zh" ${currentLanguage === "zh" ? "selected" : ""}>中文</option>
         <option value="ja" ${currentLanguage === "ja" ? "selected" : ""}>日本語</option>
@@ -1874,17 +1894,26 @@ function renderLogin(message = "") {
         <option value="ru" ${currentLanguage === "ru" ? "selected" : ""}>Русский</option>
       </select>`)}
       ${message ? `<div class="hint">${escapeHTML(message)}</div>` : ""}
-      <form class="form-card compact-form" id="login-form">
-        ${field("メールアドレス", `<input name="email" type="email" autocomplete="email" required />`)}
-        <button type="button" id="send-email-code">認証コードを送信</button>
-        ${field("メール認証コード", `<input name="code" inputmode="numeric" autocomplete="one-time-code" required />`)}
-        <button class="primary">ログイン</button>
+      <form id="local-account-form" class="form-card compact-form">
+        ${field("アカウント", `<select name="accountId" required>${rawState.accountUsers.map(account => `<option value="${escapeHTML(account.id)}">${escapeHTML(account.displayName || account.email || account.id)}</option>`).join("")}</select>`)}
+        <button class="primary">開く</button>
       </form>
-    </section>
-  `;
+    </section>`;
   renderAccountBar();
-  bindLoginForm();
-  document.getElementById("login-language-select")?.addEventListener("change", (event) => {
+  document.getElementById("local-account-form").addEventListener("submit", event => {
+    event.preventDefault();
+    const id = new FormData(event.currentTarget).get("accountId");
+    if (!rawState.accountUsers.some(account => account.id === id)) return;
+    currentUserId = id;
+    currentCompanyId = "";
+    localStorage.setItem(sessionKey, id);
+    sessionStorage.setItem(sessionKey, id);
+    localStorage.removeItem(sessionCompanyKey);
+    sessionStorage.removeItem(sessionCompanyKey);
+    saveState({ skipCloud: true });
+    render();
+  });
+  document.getElementById("login-language-select")?.addEventListener("change", event => {
     currentLanguage = event.currentTarget.value;
     localStorage.setItem(languageKey, currentLanguage);
     renderLogin(message);
@@ -1967,7 +1996,7 @@ function renderAccountBar() {
   actions.insertAdjacentHTML("afterbegin", `
     <span class="account-chip">${escapeHTML(user.displayName || user.email)}${company ? ` · ${escapeHTML(company.companyName)} · ${escapeHTML(t(member?.role || ""))}` : ""}</span>
     ${activeMemberships().length > 1 ? `<button type="button" id="company-switch-btn">会社を切り替える</button>` : ""}
-    <button type="button" id="logout-btn">${t("退出")}</button>
+    ${rawState.accountUsers.length > 1 ? `<button type="button" id="logout-btn">本機アカウントを切り替える</button>` : ""}
   `);
   document.getElementById("company-switch-btn")?.addEventListener("click", () => {
     currentCompanyId = "";
@@ -1975,12 +2004,13 @@ function renderAccountBar() {
     render();
   });
   document.getElementById("logout-btn")?.addEventListener("click", () => {
-    window.KaishaRakuCloud?.signOut?.();
     currentUserId = "";
     currentCompanyId = "";
+    localStorage.removeItem(sessionKey);
     sessionStorage.removeItem(sessionKey);
+    localStorage.removeItem(sessionCompanyKey);
     sessionStorage.removeItem(sessionCompanyKey);
-    render();
+    renderLogin();
   });
 }
 

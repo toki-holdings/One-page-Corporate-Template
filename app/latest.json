@@ -1,0 +1,42 @@
+{
+  "app": "kaisha-raku-keiei",
+  "version": "20261011-local47",
+  "baseUrl": "https://toki-holdings.jp/app/desktop-local47/",
+  "minLauncherVersion": "20260715-cloud44",
+  "force": false,
+  "notes": "Open the saved local account without email verification or an idle login timeout; retain existing business functionality.",
+  "files": [
+    {
+      "path": "index.html",
+      "sha256": "de3e3da9c6c266f36576daadba9b3a2927d87ec95b3069ccbf766ea10ba82b46"
+    },
+    {
+      "path": "styles.css",
+      "sha256": "f5e9f9303467f48e80f913eccbfb245b1b87c3ada0490d86ba5cd62e3a19f33b"
+    },
+    {
+      "path": "app.js",
+      "sha256": "fea23ced860eed014dd483f812a617c607dd4945d801bd917c02b27c6274b961"
+    },
+    {
+      "path": "supabase-cloud.js",
+      "sha256": "36e7121e01de11fd56def172f8ce2830df56f78648421cad323c3f2e0bd8e7dc"
+    },
+    {
+      "path": "supabase-config.js",
+      "sha256": "f40e89cf45e8378de3db1cd6d5a418c1af3b718bbf4340135dab2c210c293ebf"
+    },
+    {
+      "path": "service-worker.js",
+      "sha256": "dd0aad3737e67ada1b6c2b18e0ced8432b8f3dbfe5063d9103c6c1e0635f09cc"
+    },
+    {
+      "path": "manifest.webmanifest",
+      "sha256": "e6a373665afd8734778dbab924a2ebcb32d0d707afd08cfe77bde856738ccf4b"
+    },
+    {
+      "path": "assets/app-icon.svg",
+      "sha256": "da863b6fcce5c15ba6abad3741a1ad90497678f266065f2fedd238614ee90fbc"
+    }
+  ]
+}

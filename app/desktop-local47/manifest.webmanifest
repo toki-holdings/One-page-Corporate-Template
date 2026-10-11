@@ -1,0 +1,36 @@
+{
+  "name": "会社ラク経営",
+  "short_name": "ラク経営",
+  "description": "日本企業向けの在庫、販売、費用、給与、B2B市場管理アプリ",
+  "lang": "ja",
+  "dir": "ltr",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f4f6f8",
+  "theme_color": "#111827",
+  "categories": ["business", "productivity", "finance"],
+  "icons": [
+    {
+      "src": "./assets/app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "商品管理",
+      "short_name": "商品",
+      "url": "./index.html#products",
+      "description": "商品と在庫を確認"
+    },
+    {
+      "name": "販売管理",
+      "short_name": "販売",
+      "url": "./index.html#sales",
+      "description": "販売記録を確認"
+    }
+  ]
+}
